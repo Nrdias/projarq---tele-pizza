@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.cardapio.CabecalhoCardapioPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.cardapio.FoodMenuPresenter;
-import com.bcopstein.ex4_lancheriaddd_v1.Application.RecuperaListaCardapiosUC;
-import com.bcopstein.ex4_lancheriaddd_v1.Application.RecuperarCardapioUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.FoodMenu.RecuperaListaCardapiosUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.FoodMenu.RecuperarCardapioUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.FoodMenuResponse;
 
 @RestController

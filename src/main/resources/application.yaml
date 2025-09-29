@@ -24,3 +24,16 @@ application:
   name: ex4-lancheriaddd-v1
 server:
   port: 8080
+
+# Configurações do SpringDoc OpenAPI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true
+    show-extensions: true
+    show-common-extensions: true
+  show-actuator: true
