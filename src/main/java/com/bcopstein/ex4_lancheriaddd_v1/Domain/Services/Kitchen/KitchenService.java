@@ -23,7 +23,7 @@ public class KitchenService {
     }
 
     private synchronized void colocaEmPreparacao(Order pedido){
-    pedido.setStatus(Order.Status.PREPARATION);
+    pedido.setStatus(Order.Status.PREPARACAO);
         emPreparacao = pedido;
         System.out.println("Pedido em preparacao: "+pedido);
         // Agenda pedidoPronto para ser chamado em 2 segundos
@@ -39,7 +39,7 @@ public class KitchenService {
     }
 
     public synchronized void pedidoPronto() {
-        emPreparacao.setStatus(Order.Status.READY);
+        emPreparacao.setStatus(Order.Status.PRONTO);
         filaSaida.add(emPreparacao);
         System.out.println("Pedido na fila de saida: "+emPreparacao);
         emPreparacao = null;
