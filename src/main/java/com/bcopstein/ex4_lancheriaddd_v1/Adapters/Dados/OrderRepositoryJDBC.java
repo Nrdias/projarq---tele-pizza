@@ -79,5 +79,41 @@ public class OrderRepositoryJDBC implements OrderRepository{
       });
     }
 
+    @Override
+    public Order createOrder(Order order) {
+        // Insert the order
+        String orderSql = "INSERT INTO pedidos (id, cliente_cpf, data_hora_pagamento, status, valor, impostos, desconto, valor_cobrado) " +
+                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        jdbcTemplate.update(orderSql, 
+            order.getId(),
+            order.getCustomer().getCpf(),
+            order.getPaymentDateTime(),
+            order.getStatus().toString(),
+            order.getValue(),
+            order.getTaxes(),
+            order.getDiscount(),
+            order.getChargedValue()
+        );
+        
+        // Insert order items
+        String itemSql = "INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (?, ?, ?, ?)";
+        String maxItemIdSql = "SELECT COALESCE(MAX(id), 0) FROM itens_pedido";
+        long maxItemId = jdbcTemplate.queryForObject(maxItemIdSql, Long.class);
+        long itemId = maxItemId + 1;
+        
+        for (OrderItem item : order.getItems()) {
+            jdbcTemplate.update(itemSql, itemId++, order.getId(), item.getItem().getId(), item.getQuantity());
+        }
+        
+        return order;
+    }
+
+    @Override
+    public long getNextOrderId() {
+        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM pedidos";
+        return jdbcTemplate.queryForObject(sql, Long.class);
+    }
+
     
 }

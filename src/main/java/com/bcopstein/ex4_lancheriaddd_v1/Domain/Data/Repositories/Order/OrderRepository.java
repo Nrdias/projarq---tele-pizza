@@ -4,4 +4,6 @@ import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Order;
 
 public interface OrderRepository {
   public Order getOrder(long id);
+  public Order createOrder(Order order);
+  public long getNextOrderId();
 }

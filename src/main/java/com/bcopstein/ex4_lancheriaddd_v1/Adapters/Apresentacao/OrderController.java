@@ -6,12 +6,18 @@ import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.order.OrderPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.order.SubmitOrderPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderStatusUsecase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderUsecase;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.SubmitOrderUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderRequest;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Order;
 
 @RestController
@@ -20,10 +26,14 @@ public class OrderController {
 
     private GetOrderUsecase getOrderUseCase;
     private GetOrderStatusUsecase getOrderStatusUseCase;
+    private SubmitOrderUC submitOrderUC;
 
-    public OrderController(GetOrderUsecase getOrderUseCase, GetOrderStatusUsecase getOrderStatusUseCase){
+    public OrderController(GetOrderUsecase getOrderUseCase, 
+                          GetOrderStatusUsecase getOrderStatusUseCase,
+                          SubmitOrderUC submitOrderUC){
       this.getOrderUseCase = getOrderUseCase;
       this.getOrderStatusUseCase = getOrderStatusUseCase;
+      this.submitOrderUC = submitOrderUC;
     }
 
     @GetMapping("/{id}")
@@ -60,5 +70,12 @@ public class OrderController {
     @CrossOrigin("*")
     public Order.Status getOrderStatus(@PathVariable(value="id")long id){
       return getOrderStatusUseCase.run(id);
+    }
+
+    @PostMapping
+    @CrossOrigin("*")
+    public SubmitOrderPresenter submitOrder(@RequestBody SubmitOrderRequest request) {
+      SubmitOrderResponse response = submitOrderUC.run(request);
+      return new SubmitOrderPresenter(response);
     }
 }
