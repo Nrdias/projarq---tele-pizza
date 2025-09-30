@@ -1,6 +1,5 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Domain.Services.Order;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +39,11 @@ public class OrderProcessingService {
 
     public OrderProcessingResult processOrder(String customerCpf, List<OrderItemRequest> items) {
         try {
-            // 1. Validate customer
             Customer customer = customerRepository.getCustomerByCpf(customerCpf);
             if (customer == null) {
                 return new OrderProcessingResult(false, "Cliente não encontrado", null);
             }
 
-            // 2. Load products and create order items
             List<OrderItem> orderItems = new ArrayList<>();
             double totalValue = 0.0;
 
@@ -61,25 +58,22 @@ public class OrderProcessingService {
                 totalValue += (product.getPrice() * itemRequest.getQuantity()) / 100.0; // Convert from cents
             }
 
-            // 3. Check ingredient availability
             Map<Long, Integer> requiredIngredients = calculateRequiredIngredients(orderItems);
             if (!checkIngredientAvailability(requiredIngredients)) {
                 return new OrderProcessingResult(false, "Ingredientes insuficientes no estoque", null);
             }
 
-            // 4. Calculate order values
-            double taxes = totalValue * 0.15; // 15% tax
+            double taxes = totalValue * 0.15;
             double discount = calculateDiscount(totalValue);
             double chargedValue = totalValue + taxes - discount;
 
-            // 5. Create order
             long orderId = orderRepository.getNextOrderId();
             Order order = new Order(
                 orderId,
                 customer,
                 null, // Payment date will be set when paid
                 orderItems,
-                Order.Status.NOVO,
+                Order.Status.APROVADO,
                 totalValue,
                 taxes,
                 discount,

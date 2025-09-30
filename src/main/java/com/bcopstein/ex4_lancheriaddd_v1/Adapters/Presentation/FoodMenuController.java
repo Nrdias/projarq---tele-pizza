@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.cardapio.CabecalhoCardapioPresenter;
-import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.cardapio.FoodMenuPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.cardapio.CabecalhoCardapioPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.cardapio.FoodMenuPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.FoodMenu.RecuperaListaCardapiosUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.FoodMenu.RecuperarCardapioUC;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.FoodMenuResponse;

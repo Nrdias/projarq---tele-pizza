@@ -1,6 +1,7 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Application.Order;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,25 +12,26 @@ import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderRespon
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Services.Order.OrderProcessingService;
 
 @Component
-public class SubmitOrderUC {
+public class SubmitOrderUseCase {
     private OrderProcessingService orderProcessingService;
 
     @Autowired
-    public SubmitOrderUC(OrderProcessingService orderProcessingService) {
+    public SubmitOrderUseCase(OrderProcessingService orderProcessingService) {
         this.orderProcessingService = orderProcessingService;
     }
 
     public SubmitOrderResponse run(SubmitOrderRequest request) {
-        // Convert request items to domain objects
-        List<OrderProcessingService.OrderItemRequest> orderItems = request.getItems().stream()
+        List<SubmitOrderRequest.OrderItemRequest> items = request.getItems();
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        List<OrderProcessingService.OrderItemRequest> orderItems = items.stream()
             .map(item -> new OrderProcessingService.OrderItemRequest(item.getProductId(), item.getQuantity()))
             .collect(Collectors.toList());
 
-        // Process the order
         OrderProcessingService.OrderProcessingResult result = 
             orderProcessingService.processOrder(request.getCustomerCpf(), orderItems);
 
-        // Create response
         if (result.isApproved() && result.getOrder() != null) {
             return new SubmitOrderResponse(
                 true,

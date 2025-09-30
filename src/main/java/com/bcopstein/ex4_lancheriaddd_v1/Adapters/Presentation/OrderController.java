@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,13 +9,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.order.OrderPresenter;
-import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao.Presenters.order.SubmitOrderPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.OrderPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.PaginatedOrdersPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.SubmitOrderPresenter;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetAllOrdersPaginatedUseCase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderStatusUsecase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderUsecase;
-import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.SubmitOrderUC;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.SubmitOrderUseCase;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.PaginatedOrdersResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Order;
@@ -26,14 +30,17 @@ public class OrderController {
 
     private GetOrderUsecase getOrderUseCase;
     private GetOrderStatusUsecase getOrderStatusUseCase;
-    private SubmitOrderUC submitOrderUC;
+    private SubmitOrderUseCase submitOrderUC;
+    private GetAllOrdersPaginatedUseCase getAllOrdersPaginatedUseCase;
 
     public OrderController(GetOrderUsecase getOrderUseCase, 
                           GetOrderStatusUsecase getOrderStatusUseCase,
-                          SubmitOrderUC submitOrderUC){
+                          SubmitOrderUseCase submitOrderUC,
+                          GetAllOrdersPaginatedUseCase getAllOrdersPaginatedUseCase){
       this.getOrderUseCase = getOrderUseCase;
       this.getOrderStatusUseCase = getOrderStatusUseCase;
       this.submitOrderUC = submitOrderUC;
+      this.getAllOrdersPaginatedUseCase = getAllOrdersPaginatedUseCase;
     }
 
     @GetMapping("/{id}")
@@ -77,5 +84,14 @@ public class OrderController {
     public SubmitOrderPresenter submitOrder(@RequestBody SubmitOrderRequest request) {
       SubmitOrderResponse response = submitOrderUC.run(request);
       return new SubmitOrderPresenter(response);
+    }
+
+    @GetMapping("/all")
+    @CrossOrigin("*")
+    public PaginatedOrdersPresenter getAllOrdersPaginated(
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "5") int size) {
+      PaginatedOrdersResponse response = getAllOrdersPaginatedUseCase.run(page, size);
+      return new PaginatedOrdersPresenter(response);
     }
 }

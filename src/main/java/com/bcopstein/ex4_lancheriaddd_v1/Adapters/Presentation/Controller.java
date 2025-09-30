@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Apresentacao;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
