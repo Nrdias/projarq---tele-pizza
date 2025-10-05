@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados.FoodMenu;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,10 @@ import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Product;
 @Component
 public class FoodMenuRepositoryJDBC implements FoodMenuRepository{
     private JdbcTemplate jdbcTemplate;
-    private ProductsRepository productsRepository;
 
     @Autowired
     public FoodMenuRepositoryJDBC(JdbcTemplate jdbcTemplate,ProductsRepository  productsRepository){
         this.jdbcTemplate = jdbcTemplate;
-        this.productsRepository = productsRepository;
     }
 
     @Override

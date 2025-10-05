@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados.Product;
 
 import java.util.List;
 

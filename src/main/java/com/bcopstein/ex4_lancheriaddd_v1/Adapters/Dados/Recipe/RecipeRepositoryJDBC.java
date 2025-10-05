@@ -1,5 +1,5 @@
 
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados.Recipe;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -113,9 +113,7 @@ public class OrderPresenter {
         private int productPrice;
         private int quantity;
 
-        public OrderItemPresenter() {
-            // Default constructor for JSON serialization
-        }
+        public OrderItemPresenter() {}
 
         public OrderItemPresenter(long productId, String productDescription, int productPrice, int quantity) {
             this.productId = productId;

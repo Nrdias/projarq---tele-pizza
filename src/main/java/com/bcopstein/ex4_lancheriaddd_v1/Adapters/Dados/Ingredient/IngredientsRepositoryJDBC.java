@@ -1,4 +1,4 @@
-package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados;
+package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados.Ingredient;
 
 import java.util.List;
 
@@ -22,8 +22,7 @@ public class IngredientsRepositoryJDBC implements IngredientsRepository{
         String sql = "SELECT id, descricao FROM ingredientes";
         List<Ingredient> ingredientes = this.jdbcTemplate.query(
                 sql,
-                ps -> {
-                }, // Sem parâmetros
+                ps -> {},
                 (rs, rowNum) -> new Ingredient(rs.getLong("id"), rs.getString("descricao")));
         return ingredientes;
     }
