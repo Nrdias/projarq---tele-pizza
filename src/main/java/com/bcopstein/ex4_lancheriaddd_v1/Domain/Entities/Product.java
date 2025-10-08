@@ -41,7 +41,6 @@ public class Product {
         this.price = price;
     }
 
-    // Validates a price (price in cents)
     public static boolean priceValid(int price) {
         return price > 0;
     }

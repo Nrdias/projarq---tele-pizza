@@ -71,7 +71,7 @@ public class OrderProcessingService {
             Order order = new Order(
                 orderId,
                 customer,
-                null, // Payment date will be set when paid
+                null,
                 orderItems,
                 Order.Status.APROVADO,
                 totalValue,
@@ -80,10 +80,8 @@ public class OrderProcessingService {
                 chargedValue
             );
 
-            // 6. Reserve ingredients (update stock)
             reserveIngredients(requiredIngredients);
 
-            // 7. Save order
             Order savedOrder = orderRepository.createOrder(order);
 
             return new OrderProcessingResult(true, "Pedido aprovado com sucesso", savedOrder);
@@ -136,7 +134,7 @@ public class OrderProcessingService {
 
     private double calculateDiscount(double totalValue) {
         if (totalValue >= 100.0) {
-            return 10.0; // 10 reais discount for orders >= 100
+            return 10.0;
         }
         return 0.0;
     }

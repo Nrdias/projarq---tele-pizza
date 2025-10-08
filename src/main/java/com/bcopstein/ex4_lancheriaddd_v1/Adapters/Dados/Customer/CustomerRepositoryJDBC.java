@@ -31,7 +31,6 @@ public class CustomerRepositoryJDBC implements CustomerRepository {
                 return new Customer(customerCpf, nome, celular, endereco, email);
             }, cpf);
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // Customer not found, return null
             return null;
         }
     }

@@ -36,7 +36,6 @@ public class FoodMenuService {
     }
 
     public List<Product> getFoodMenuRecommendations(){
-        // For now returns always the cheese and ham pizza as "chef" recommendation
         return List.of(productsRepository.getProductById(2L));
     }
 }
