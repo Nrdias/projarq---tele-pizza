@@ -7,19 +7,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.OrderPresenter;
-import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.PaginatedOrdersPresenter;
 import com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.order.SubmitOrderPresenter;
-import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetAllOrdersPaginatedUseCase;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.CancelOrderUseCase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderStatusUsecase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.GetOrderUsecase;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.PayOrderUseCase;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Order.SubmitOrderUseCase;
-import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.PaginatedOrdersResponse;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.CancelOrderResponse;
+import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.PayOrderResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.SubmitOrderResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Order;
@@ -31,16 +32,19 @@ public class OrderController {
     private GetOrderUsecase getOrderUseCase;
     private GetOrderStatusUsecase getOrderStatusUseCase;
     private SubmitOrderUseCase submitOrderUC;
-    private GetAllOrdersPaginatedUseCase getAllOrdersPaginatedUseCase;
+    private CancelOrderUseCase cancelOrderUC;
+    private PayOrderUseCase payOrderUC;
 
     public OrderController(GetOrderUsecase getOrderUseCase, 
                           GetOrderStatusUsecase getOrderStatusUseCase,
                           SubmitOrderUseCase submitOrderUC,
-                          GetAllOrdersPaginatedUseCase getAllOrdersPaginatedUseCase){
+                          CancelOrderUseCase cancelOrderUC,
+                          PayOrderUseCase payOrderUC){
       this.getOrderUseCase = getOrderUseCase;
       this.getOrderStatusUseCase = getOrderStatusUseCase;
       this.submitOrderUC = submitOrderUC;
-      this.getAllOrdersPaginatedUseCase = getAllOrdersPaginatedUseCase;
+      this.cancelOrderUC = cancelOrderUC;
+      this.payOrderUC = payOrderUC;
     }
 
     @GetMapping("/{id}")
@@ -86,12 +90,15 @@ public class OrderController {
       return new SubmitOrderPresenter(response);
     }
 
-    @GetMapping("/all")
+    @PutMapping("/{id}/cancel")
     @CrossOrigin("*")
-    public PaginatedOrdersPresenter getAllOrdersPaginated(
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "5") int size) {
-      PaginatedOrdersResponse response = getAllOrdersPaginatedUseCase.run(page, size);
-      return new PaginatedOrdersPresenter(response);
+    public CancelOrderResponse cancelOrder(@PathVariable(value="id") long id) {
+      return cancelOrderUC.run(id);
+    }
+    
+    @PutMapping("/{id}/pay")
+    @CrossOrigin("*")
+    public PayOrderResponse payOrder(@PathVariable(value="id") long id) {
+      return payOrderUC.run(id);
     }
 }

@@ -55,7 +55,7 @@ public class OrderProcessingService {
 
                 OrderItem orderItem = new OrderItem(product, itemRequest.getQuantity());
                 orderItems.add(orderItem);
-                totalValue += (product.getPrice() * itemRequest.getQuantity()) / 100.0; // Convert from cents
+                totalValue += (product.getPrice() * itemRequest.getQuantity()) / 100.0;
             }
 
             Map<Long, Integer> requiredIngredients = calculateRequiredIngredients(orderItems);

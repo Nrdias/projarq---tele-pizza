@@ -86,3 +86,14 @@ create table if not exists itens_pedido (
   foreign key (pedido_id) references pedidos(id),
   foreign key (produto_id) references produtos(id)
 );
+
+-- Tabela de Histórico de Status do Pedido (para auditoria e rastreamento)
+create table if not exists historico_status_pedido (
+  id bigint primary key,
+  pedido_id bigint not null,
+  status_anterior varchar(20),
+  status_novo varchar(20) not null,
+  data_mudanca timestamp not null,
+  observacoes varchar(500),
+  foreign key (pedido_id) references pedidos(id)
+);

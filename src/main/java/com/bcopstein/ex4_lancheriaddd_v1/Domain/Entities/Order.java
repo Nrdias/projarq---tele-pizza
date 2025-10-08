@@ -12,7 +12,8 @@ public class Order {
         PREPARACAO,
         PRONTO,
         TRANSPORTE,
-        ENTREGUE
+        ENTREGUE,
+        CANCELADO
     }
     private long id;
     private Customer customer;
@@ -47,6 +48,10 @@ public class Order {
 
     public LocalDateTime getPaymentDateTime() {
         return paymentDateTime;
+    }
+
+    public void setPaymentDateTime(LocalDateTime paymentDateTime) {
+        this.paymentDateTime = paymentDateTime;
     }
 
     public List<OrderItem> getItems() {

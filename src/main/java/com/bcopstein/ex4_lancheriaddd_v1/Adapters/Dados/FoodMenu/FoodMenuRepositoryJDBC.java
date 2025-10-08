@@ -6,17 +6,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Data.Repositories.FoodMenu.FoodMenuRepository;
-import com.bcopstein.ex4_lancheriaddd_v1.Domain.Data.Repositories.Products.ProductsRepository;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.MenuHeader;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Menu;
-import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Product;
 
 @Component
 public class FoodMenuRepositoryJDBC implements FoodMenuRepository{
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FoodMenuRepositoryJDBC(JdbcTemplate jdbcTemplate,ProductsRepository  productsRepository){
+    public FoodMenuRepositoryJDBC(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -28,19 +26,7 @@ public class FoodMenuRepositoryJDBC implements FoodMenuRepository{
             ps -> ps.setLong(1, id),
             (rs, rowNum) -> new Menu(rs.getLong("id"), rs.getString("titulo"), null)
         );
-        if (menus.isEmpty()) {
-            return null;
-        }
-        Menu menu = menus.getFirst();
-        List<Product> products = productsRepository.getMenuProducts(id);
-        menu.setProducts(products);
-        return menu;
-    }
-
-    @Override
-    // For now returns always the cheese and ham pizza as "chef" recommendation
-    public List<Product> chefRecommendations() {
-        return List.of(productsRepository.getProductById(2L));   
+        return menus.isEmpty() ? null : menus.getFirst();
     }
 
     @Override

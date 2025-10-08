@@ -1,6 +1,7 @@
 -- Inserção dos clientes
 INSERT INTO clientes (cpf, nome, celular, endereco, email) VALUES ('9001', 'Huguinho Pato', '51985744566', 'Rua das Flores, 100', 'huguinho.pato@email.com');
 INSERT INTO clientes (cpf, nome, celular, endereco, email) VALUES ('9002', 'Luizinho Pato', '5199172079', 'Av. Central, 200', 'zezinho.pato@email.com');
+INSERT INTO clientes (cpf, nome, celular, endereco, email) VALUES ('222', 'João Silva', '51999887766', 'Rua dos Testes, 123', 'joao.silva@email.com');
 
 -- Inserção dos ingredientes
 INSERT INTO ingredientes (id, descricao) VALUES (1, 'Disco de pizza');
@@ -80,6 +81,9 @@ VALUES (3, '9001', '2024-01-17 18:45:00', 'NOVO', 40.00, 6.00, 0.00, 46.00);
 INSERT INTO pedidos (id, cliente_cpf, data_hora_pagamento, status, valor, impostos, desconto, valor_cobrado) 
 VALUES (4, '9002', '2024-01-18 21:00:00', 'PAGO', 115.00, 17.25, 10.00, 122.25);
 
+INSERT INTO pedidos (id, cliente_cpf, data_hora_pagamento, status, valor, impostos, desconto, valor_cobrado) 
+VALUES (5, '9001', NULL, 'APROVADO', 55.00, 8.25, 0.00, 63.25);
+
 -- Inserção dos itens dos pedidos
 -- Pedido 1: 1x Pizza calabresa
 INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (1, 1, 1, 1);
@@ -93,3 +97,6 @@ INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (3, 3, 3
 -- Pedido 4: 2x Pizza calabresa + 1x Pizza queijo e presunto
 INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (4, 4, 1, 2);
 INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (5, 4, 2, 1);
+
+-- Pedido 5: 1x Pizza calabresa (APROVADO, não pago - pode ser cancelado)
+INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (6, 5, 1, 1);

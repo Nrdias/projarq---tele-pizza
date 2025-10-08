@@ -13,7 +13,7 @@ public class GetOrderItemsUsecase {
     private OrderService orderService;
 
     @Autowired
-    public GetOrderItemsUsecase(OrderService OrderServic){
+    public GetOrderItemsUsecase(OrderService orderService){
         this.orderService = orderService;
     }
 

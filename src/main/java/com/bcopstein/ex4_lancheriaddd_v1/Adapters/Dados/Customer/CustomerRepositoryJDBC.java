@@ -20,14 +20,19 @@ public class CustomerRepositoryJDBC implements CustomerRepository {
     public Customer getCustomerByCpf(String cpf) {
         String sql = "SELECT cpf, nome, celular, endereco, email FROM clientes WHERE cpf = ?";
         
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            String customerCpf = rs.getString("cpf");
-            String nome = rs.getString("nome");
-            String celular = rs.getString("celular");
-            String endereco = rs.getString("endereco");
-            String email = rs.getString("email");
-            
-            return new Customer(customerCpf, nome, celular, endereco, email);
-        }, cpf);
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                String customerCpf = rs.getString("cpf");
+                String nome = rs.getString("nome");
+                String celular = rs.getString("celular");
+                String endereco = rs.getString("endereco");
+                String email = rs.getString("email");
+                
+                return new Customer(customerCpf, nome, celular, endereco, email);
+            }, cpf);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            // Customer not found, return null
+            return null;
+        }
     }
 }

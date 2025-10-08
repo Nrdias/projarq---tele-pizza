@@ -50,6 +50,7 @@ public class OrderRepositoryJDBC implements OrderRepository{
           double valorCobrado = rs.getDouble("valor_cobrado");
           
           Customer cliente = new Customer(cpf, nome, celular, endereco, email);
+          List<OrderItem> itens = getOrderItems(pedidoId);
           
           return new Order(pedidoId, cliente, dataHoraPagamento, itens, status, valor, impostos, desconto, valorCobrado);
         }
@@ -75,7 +76,8 @@ public class OrderRepositoryJDBC implements OrderRepository{
         
         String itemSql = "INSERT INTO itens_pedido (id, pedido_id, produto_id, quantidade) VALUES (?, ?, ?, ?)";
         String maxItemIdSql = "SELECT COALESCE(MAX(id), 0) FROM itens_pedido";
-        long maxItemId = jdbcTemplate.queryForObject(maxItemIdSql, Long.class);
+        Long maxItemIdResult = jdbcTemplate.queryForObject(maxItemIdSql, Long.class);
+        long maxItemId = maxItemIdResult != null ? maxItemIdResult : 0L;
         long itemId = maxItemId + 1;
         
         for (OrderItem item : order.getItems()) {
@@ -85,21 +87,44 @@ public class OrderRepositoryJDBC implements OrderRepository{
         return order;
     }
 
+    private List<OrderItem> getOrderItems(long id){
+      String sql = "SELECT ip.quantidade, p.id as produto_id, p.descricao, p.preco " +
+                   "FROM itens_pedido ip " +
+                   "JOIN produtos p ON ip.produto_id = p.id " +
+                   "WHERE ip.pedido_id = ?";
+
+      return jdbcTemplate.query(sql, ps -> ps.setLong(1, id), (rs, rowNum) -> {
+        int quantidade = rs.getInt("quantidade");
+        long produtoId = rs.getLong("produto_id");
+        String descricao = rs.getString("descricao");
+        int preco = rs.getInt("preco");
+        
+        Recipe receita = new Recipe(produtoId, "Receita para " + descricao, java.util.Collections.emptyList());
+        Product produto = new Product(produtoId, descricao, receita, preco);
+        return new OrderItem(produto, quantidade);
+      });
+    }
+
+    
+
     @Override
     public long getNextOrderId() {
         String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM pedidos";
-        return jdbcTemplate.queryForObject(sql, Long.class);
+        Long result = jdbcTemplate.queryForObject(sql, Long.class);
+        return result != null ? result : 1L;
     }
 
     @Override
-    public boolean cancelOrder(long id){
+    public boolean updateOrderStatus(long id, Order.Status newStatus) {
+        String updateSql = "UPDATE pedidos SET status = ? WHERE id = ?";
+        int updated = jdbcTemplate.update(updateSql, newStatus.toString(), id);
+        return updated == 1;
+    }
 
-    Order order = getOrder(id);
-
-    if(order.getPaymentDateTime() != null) return false;
-
-    String updateSql = "UPDATE pedidos SET status = 'CANCELLED' WHERE id = ?";
-    int updated = jdbcTemplate.update(updateSql, id);
-    return updated == 1;
+    @Override
+    public boolean updatePaymentDate(long id, LocalDateTime paymentDateTime) {
+        String updateSql = "UPDATE pedidos SET data_hora_pagamento = ? WHERE id = ?";
+        int updated = jdbcTemplate.update(updateSql, paymentDateTime, id);
+        return updated == 1;
     }
 }

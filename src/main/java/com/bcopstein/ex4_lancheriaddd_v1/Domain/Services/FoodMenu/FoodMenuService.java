@@ -6,21 +6,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Data.Repositories.FoodMenu.FoodMenuRepository;
+import com.bcopstein.ex4_lancheriaddd_v1.Domain.Data.Repositories.Products.ProductsRepository;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Menu;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.MenuHeader;
 import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Product;
 
 @Service
 public class FoodMenuService {
-    private FoodMenuRepository foodMenuRepository;
+    private final FoodMenuRepository foodMenuRepository;
+    private final ProductsRepository productsRepository;
 
     @Autowired
-    public FoodMenuService(FoodMenuRepository foodMenuRepository){
+    public FoodMenuService(FoodMenuRepository foodMenuRepository, ProductsRepository productsRepository){
         this.foodMenuRepository = foodMenuRepository;
+        this.productsRepository = productsRepository;
     }
 
-    public Menu getFoodMenu(long Id){
-        return foodMenuRepository.getById(Id);
+    public Menu getFoodMenu(long id){
+        Menu menu = foodMenuRepository.getById(id);
+        if (menu != null) {
+            List<Product> products = productsRepository.getMenuProducts(id);
+            menu.setProducts(products);
+        }
+        return menu;
     }
 
     public List<MenuHeader> getFoodMenus(){
@@ -28,6 +36,7 @@ public class FoodMenuService {
     }
 
     public List<Product> getFoodMenuRecommendations(){
-        return foodMenuRepository.chefRecommendations();
+        // For now returns always the cheese and ham pizza as "chef" recommendation
+        return List.of(productsRepository.getProductById(2L));
     }
 }
