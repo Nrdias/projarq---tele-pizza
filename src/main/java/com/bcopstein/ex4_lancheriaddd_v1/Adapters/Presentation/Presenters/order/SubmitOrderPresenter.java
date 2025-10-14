@@ -45,7 +45,6 @@ public class SubmitOrderPresenter {
         }
     }
 
-    // Getters and setters
     public boolean isApproved() {
         return approved;
     }

@@ -127,4 +127,82 @@ public class OrderRepositoryJDBC implements OrderRepository{
         int updated = jdbcTemplate.update(updateSql, paymentDateTime, id);
         return updated == 1;
     }
+
+    @Override
+    public List<Order> getDeliveredOrdersBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        String sql = "SELECT DISTINCT p.id, p.cliente_cpf, p.data_hora_pagamento, p.status, p.valor, p.impostos, p.desconto, p.valor_cobrado, " +
+                     "c.nome, c.celular, c.endereco, c.email " +
+                     "FROM pedidos p " +
+                     "JOIN clientes c ON p.cliente_cpf = c.cpf " +
+                     "WHERE p.status = 'ENTREGUE' " +
+                     "AND p.data_hora_pagamento >= ? AND p.data_hora_pagamento <= ? " +
+                     "ORDER BY p.data_hora_pagamento DESC";
+
+        return jdbcTemplate.query(sql,
+            ps -> {
+                ps.setTimestamp(1, java.sql.Timestamp.valueOf(startDate));
+                ps.setTimestamp(2, java.sql.Timestamp.valueOf(endDate));
+            },
+            (rs, rowNum) -> {
+                long pedidoId = rs.getLong("id");
+                String cpf = rs.getString("cliente_cpf");
+                String nome = rs.getString("nome");
+                String celular = rs.getString("celular");
+                String endereco = rs.getString("endereco");
+                String email = rs.getString("email");
+                LocalDateTime dataHoraPagamento = rs.getTimestamp("data_hora_pagamento") != null ? 
+                    rs.getTimestamp("data_hora_pagamento").toLocalDateTime() : null;
+                Order.Status status = Order.Status.valueOf(rs.getString("status"));
+                double valor = rs.getDouble("valor");
+                double impostos = rs.getDouble("impostos");
+                double desconto = rs.getDouble("desconto");
+                double valorCobrado = rs.getDouble("valor_cobrado");
+                
+                Customer cliente = new Customer(cpf, nome, celular, endereco, email);
+                List<OrderItem> itens = getOrderItems(pedidoId);
+                
+                return new Order(pedidoId, cliente, dataHoraPagamento, itens, status, valor, impostos, desconto, valorCobrado);
+            }
+        );
+    }
+
+    @Override
+    public List<Order> getCustomerDeliveredOrdersBetweenDates(String customerCpf, LocalDateTime startDate, LocalDateTime endDate) {
+        String sql = "SELECT DISTINCT p.id, p.cliente_cpf, p.data_hora_pagamento, p.status, p.valor, p.impostos, p.desconto, p.valor_cobrado, " +
+                     "c.nome, c.celular, c.endereco, c.email " +
+                     "FROM pedidos p " +
+                     "JOIN clientes c ON p.cliente_cpf = c.cpf " +
+                     "WHERE p.cliente_cpf = ? " +
+                     "AND p.status = 'ENTREGUE' " +
+                     "AND p.data_hora_pagamento >= ? AND p.data_hora_pagamento <= ? " +
+                     "ORDER BY p.data_hora_pagamento DESC";
+
+        return jdbcTemplate.query(sql,
+            ps -> {
+                ps.setString(1, customerCpf);
+                ps.setTimestamp(2, java.sql.Timestamp.valueOf(startDate));
+                ps.setTimestamp(3, java.sql.Timestamp.valueOf(endDate));
+            },
+            (rs, rowNum) -> {
+                long pedidoId = rs.getLong("id");
+                String cpf = rs.getString("cliente_cpf");
+                String nome = rs.getString("nome");
+                String celular = rs.getString("celular");
+                String endereco = rs.getString("endereco");
+                String email = rs.getString("email");
+                LocalDateTime dataHoraPagamento = rs.getTimestamp("data_hora_pagamento") != null ? 
+                    rs.getTimestamp("data_hora_pagamento").toLocalDateTime() : null;
+                Order.Status status = Order.Status.valueOf(rs.getString("status"));
+                double valor = rs.getDouble("valor");
+                double impostos = rs.getDouble("impostos");
+                double desconto = rs.getDouble("desconto");
+                double valorCobrado = rs.getDouble("valor_cobrado");
+                
+                Customer cliente = new Customer(cpf, nome, celular, endereco, email);
+                List<OrderItem> itens = getOrderItems(pedidoId);
+                
+                return new Order(pedidoId, cliente, dataHoraPagamento, itens, status, valor, impostos, desconto, valorCobrado);
+            }
+        );
+    }
 }

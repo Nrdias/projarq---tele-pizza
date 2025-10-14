@@ -1,6 +1,8 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,15 +34,50 @@ public class CustomerController {
 
     @PostMapping("/register")
     @CrossOrigin("*")
-    public RegisterCustomerPresenter registerCustomer(@RequestBody RegisterCustomerRequest request) {
+    public ResponseEntity<RegisterCustomerPresenter> registerCustomer(@RequestBody RegisterCustomerRequest request) {
         RegisterCustomerResponse response = registerCustomerUseCase.run(request);
-        return new RegisterCustomerPresenter(response);
+        RegisterCustomerPresenter presenter = new RegisterCustomerPresenter(response);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(presenter);
+        } else {
+            String message = response.getMessage().toLowerCase();
+            HttpStatus status;
+            
+            if (message.contains("já cadastrado") || message.contains("already exists")) {
+                status = HttpStatus.CONFLICT; 
+            } else if (message.contains("obrigatório") || message.contains("inválido") || 
+                      message.contains("required") || message.contains("invalid")) {
+                status = HttpStatus.BAD_REQUEST; 
+            } else {
+                status = HttpStatus.INTERNAL_SERVER_ERROR; 
+            }
+            
+            return ResponseEntity.status(status).body(presenter);
+        }
     }
 
     @PostMapping("/authenticate")
     @CrossOrigin("*")
-    public AuthenticateCustomerPresenter authenticateCustomer(@RequestBody AuthenticateCustomerRequest request) {
+    public ResponseEntity<AuthenticateCustomerPresenter> authenticateCustomer(@RequestBody AuthenticateCustomerRequest request) {
         AuthenticateCustomerResponse response = authenticateCustomerUseCase.run(request);
-        return new AuthenticateCustomerPresenter(response);
+        AuthenticateCustomerPresenter presenter = new AuthenticateCustomerPresenter(response);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(presenter);
+        } else {
+            String message = response.getMessage().toLowerCase();
+            HttpStatus status;
+            
+            if (message.contains("credenciais inválidas") || message.contains("invalid credentials")) {
+                status = HttpStatus.UNAUTHORIZED; 
+            } else if (message.contains("obrigatório") || message.contains("required")) {
+                status = HttpStatus.BAD_REQUEST; 
+            } else {
+                status = HttpStatus.INTERNAL_SERVER_ERROR; 
+            }
+            
+            return ResponseEntity.status(status).body(presenter);
+        }
     }
 }

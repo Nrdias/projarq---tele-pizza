@@ -64,7 +64,7 @@ public class OrderPresenter {
     }
 
     public void setItens(List<OrderItemPresenter> itens) {
-        this.items = items;
+        this.items = itens;
     }
 
     public Status getStatus() {
