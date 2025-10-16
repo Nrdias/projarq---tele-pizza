@@ -14,4 +14,5 @@ public interface OrderRepository {
   public boolean updatePaymentDate(long id, LocalDateTime paymentDateTime);
   public List<Order> getDeliveredOrdersBetweenDates(LocalDateTime startDate, LocalDateTime endDate);
   public List<Order> getCustomerDeliveredOrdersBetweenDates(String customerCpf, LocalDateTime startDate, LocalDateTime endDate);
+  public int countDeliveredOrdersByCustomerBetweenDates(String customerCpf, LocalDateTime startDate, LocalDateTime endDate);
 }

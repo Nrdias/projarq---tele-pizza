@@ -2,7 +2,6 @@ package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Dados.Order;
 
 import java.util.List;
 import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -205,4 +204,25 @@ public class OrderRepositoryJDBC implements OrderRepository{
             }
         );
     }
+
+    @Override
+    public int countDeliveredOrdersByCustomerBetweenDates(String customerCpf, LocalDateTime startDate, LocalDateTime endDate) {
+        final String sql = """
+        SELECT COUNT(*)
+        FROM pedidos
+        WHERE cliente_cpf = ?
+          AND status = 'ENTREGUE'
+          AND data_hora_pagamento BETWEEN ? AND ?
+        """;
+
+        Integer count = jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> rs.getInt(1), // RowMapper simples
+                customerCpf,
+                java.sql.Timestamp.valueOf(startDate),
+                java.sql.Timestamp.valueOf(endDate)
+        );
+        return count != null ? count : 0;
+    }
+
 }

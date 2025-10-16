@@ -1,27 +1,30 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adapters.Presentation.Presenters.customer;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Application.Responses.AuthenticateCustomerResponse;
+import com.bcopstein.ex4_lancheriaddd_v1.Domain.Entities.Customer;
 
 public class AuthenticateCustomerPresenter {
     private boolean success;
     private String message;
     private RegisterCustomerPresenter.CustomerPresenter customer;
+    private final String token;
 
-    public AuthenticateCustomerPresenter() {}
+    public AuthenticateCustomerPresenter() {
+        this.token = "";
+    }
 
     public AuthenticateCustomerPresenter(AuthenticateCustomerResponse response) {
         this.success = response.isSuccess();
         this.message = response.getMessage();
-        
-        if (response.getCustomer() != null) {
+        Customer c = response.getCustomer();
+        if (c != null) {
             this.customer = new RegisterCustomerPresenter.CustomerPresenter(
-                response.getCustomer().getCpf(),
-                response.getCustomer().getName(),
-                response.getCustomer().getPhone(),
-                response.getCustomer().getAddress(),
-                response.getCustomer().getEmail()
+                c.getCpf(), c.getName(), c.getPhone(), c.getAddress(), c.getEmail()
             );
+        } else {
+            this.customer = null;
         }
+        this.token = response.getToken();
     }
 
     public boolean isSuccess() {
@@ -46,5 +49,9 @@ public class AuthenticateCustomerPresenter {
 
     public void setCustomer(RegisterCustomerPresenter.CustomerPresenter customer) {
         this.customer = customer;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
